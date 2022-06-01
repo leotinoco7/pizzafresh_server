@@ -18,7 +18,7 @@ import { TableService } from './table.service';
 @ApiTags('table')
 @Controller('table')
 export class TableController {
-  constructor(private readonly tableService: TableService) {}
+  constructor(private tableService: TableService) {}
 
   @Get()
   @ApiOperation({

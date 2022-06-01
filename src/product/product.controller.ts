@@ -6,13 +6,11 @@ import {
   Patch,
   Param,
   Delete,
-  HttpCode,
-  HttpStatus,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger'; // < NOVO IMPORT
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('product')
 @Controller('product')
@@ -52,11 +50,10 @@ export class ProductController {
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Remover um produto pelo ID',
   })
   delete(@Param('id') id: string) {
-    this.productService.delete(id);
+    return this.productService.delete(id);
   }
 }
