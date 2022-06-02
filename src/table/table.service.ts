@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { handleError } from 'src/utils/handle-error.util';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
 import { Table } from './entities/table.entity';
@@ -21,7 +22,7 @@ export class TableService {
 
     return this.prisma.table
       .create({ data: table })
-      .catch((error) => this.handleError(error));
+      .catch((error) => handleError(error));
   }
 
   async update(id: string, dto: UpdateTableDto): Promise<Table> {
@@ -47,11 +48,5 @@ export class TableService {
     }
 
     return record;
-  }
-
-  handleError(error: Error) {
-    console.log(error.message);
-
-    return undefined;
   }
 }

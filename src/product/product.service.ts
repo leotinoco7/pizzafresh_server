@@ -1,10 +1,6 @@
-import {
-  HttpException,
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { handleError } from 'src/utils/handle-error.util';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
@@ -26,7 +22,7 @@ export class ProductService {
 
     return this.prisma.product
       .create({ data: product })
-      .catch((error) => this.handleError(error));
+      .catch((error) => handleError(error));
   }
 
   async update(id: string, dto: UpdateProductDto): Promise<Product> {
@@ -38,7 +34,7 @@ export class ProductService {
         where: { id },
         data,
       })
-      .catch((error) => this.handleError(error));
+      .catch((error) => handleError(error));
   }
 
   async delete(id: string) {
@@ -56,11 +52,5 @@ export class ProductService {
     }
 
     return record;
-  }
-
-  handleError(error: Error) {
-    console.log(error.message);
-    throw new UnprocessableEntityException(error.message);
-    return undefined;
   }
 }

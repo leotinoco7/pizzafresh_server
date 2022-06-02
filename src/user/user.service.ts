@@ -3,13 +3,13 @@ import {
   HttpException,
   Injectable,
   NotFoundException,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { handleError } from 'src/utils/handle-error.util';
 
 @Injectable()
 export class UserService {
@@ -44,10 +44,9 @@ export class UserService {
       ...dto,
       password: await bcrypt.hash(dto.password, 10),
     };
-
     return this.prisma.user
       .create({ data: user, select: this.userSelect })
-      .catch((error) => this.handleError(error));
+      .catch((error) => handleError(error));
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<User> {
@@ -73,7 +72,7 @@ export class UserService {
         data,
         select: this.userSelect,
       })
-      .catch((error) => this.handleError(error));
+      .catch((error) => handleError(error));
   }
 
   async delete(id: string) {
@@ -94,18 +93,5 @@ export class UserService {
     }
 
     return record;
-  }
-
-  handleError(error: Error): undefined {
-    const errorLines = error.message?.split('\n');
-    const lastErrorLine = errorLines[errorLines.length - 1]?.trim();
-
-    if (!lastErrorLine) {
-      console.error(error);
-    }
-
-    throw new UnprocessableEntityException(
-      lastErrorLine || 'Algum erro ocorreu ao executar a operação',
-    );
   }
 }
